@@ -1,8 +1,8 @@
 from typing import Any, Dict
 
 
-class MockHttpxResponse:
-    """A mock response class that implements basic interface for httpx.Response"""
+class MockRequestsResponse:
+    """A mock response class that implements basic interface for requests.Response"""
 
     def __init__(self, status_code: int, body: dict):
         self.status_code = status_code
@@ -20,15 +20,14 @@ def required_in_request(request_body: Dict[str, Any], expected_params: Dict[str,
 
 
 def mock_request(
-    response: MockHttpxResponse = None,
+    response: MockRequestsResponse = None,
     required_params: Dict[str, Any] = None,
     required_body: Dict[str, Any] = None,
     expected_auth_token: str = None,
     expected_method: str = None,
     expected_in_path: str = None,
-    is_async: bool = False,
 ):
-    """Mock behaviour of httpx.request, with given expectations."""
+    """Mock behaviour of requests.request, with given expectations."""
 
     def mocked(method: str, url: str, **request_kwargs):
         if expected_method is not None and method != expected_method:
@@ -47,7 +46,7 @@ def mock_request(
             and request_kwargs["headers"]["Authorization"]
             != "Basic {0}".format(expected_auth_token)
         ):
-            return MockHttpxResponse(401, {})
+            return MockRequestsResponse(401, {})
 
         if required_params is not None and "params" not in request_kwargs:
             raise Exception("params expected in request but not found!")
@@ -61,9 +60,6 @@ def mock_request(
         if required_body is not None:
             required_in_request(request_kwargs["json"], required_body)
 
-        return response or MockHttpxResponse(200, {"success": True})
+        return response or MockRequestsResponse(200, {"success": True})
 
-    async def async_mocked(method: str, url: str, **request_kwargs):
-        return mocked(method, url, **request_kwargs)
-
-    return mocked if not is_async else async_mocked
+    return mocked

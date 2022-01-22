@@ -5,22 +5,22 @@ import pytest
 from onesignal_sdk.error import OneSignalHTTPError
 from onesignal_sdk.request import basic_auth_request
 
-from .mocks import MockHttpxResponse, mock_request
+from .mocks import MockRequestsResponse, mock_request
 
 
 class TestBasicAuthRequest:
     TOKEN = "some_test_token"
     TEST_URL = "https://onesignal.com/api/v1"
-    RESPONSE_200 = MockHttpxResponse(200, {"success": True})
-    RESPONSE_404 = MockHttpxResponse(404, {"errors": ["Not found"]})
+    RESPONSE_200 = MockRequestsResponse(200, {"success": True})
+    RESPONSE_404 = MockRequestsResponse(404, {"errors": ["Not found"]})
 
-    @mock.patch("httpx.request", side_effect=mock_request(response=RESPONSE_404))
+    @mock.patch("requests.request", side_effect=mock_request(response=RESPONSE_404))
     def test_raises_onesignalhttperror_for_error_status_codes(self, mocked_request):
         with pytest.raises(OneSignalHTTPError):
             basic_auth_request("GET", self.TEST_URL)
 
     @mock.patch(
-        "httpx.request",
+        "requests.request",
         side_effect=mock_request(
             response=RESPONSE_200,
             expected_auth_token=TOKEN,
