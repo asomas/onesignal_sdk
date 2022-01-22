@@ -12,8 +12,12 @@ class OneSignalHTTPError(Exception):
         self.status_code = response.status_code
 
     def _get_message(self, response: httpx.Response) -> str:
-        message = f'Unexpected http status code {response.status_code}.'
+        message = f"Unexpected http status code {response.status_code}."
         response_body = response.json()
-        if response_body and 'errors' in response_body and len(response_body['errors']) > 0:
-            message = response_body['errors'][0]
+        if (
+            response_body
+            and "errors" in response_body
+            and len(response_body["errors"]) > 0
+        ):
+            message = response_body["errors"][0]
         return message

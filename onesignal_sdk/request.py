@@ -6,16 +6,16 @@ from .error import OneSignalHTTPError
 from .response import OneSignalResponse
 
 
-def _build_request_kwargs(token: str = None,
-                          payload: Dict[str, Any] = None,
-                          params: Dict[str, Any] = None) -> Dict[str, Any]:
+def _build_request_kwargs(
+    token: str = None, payload: Dict[str, Any] = None, params: Dict[str, Any] = None
+) -> Dict[str, Any]:
     request_kwargs = {}
     if token is not None:
-        request_kwargs['headers'] = {'Authorization': 'Basic {0}'.format(token)}
+        request_kwargs["headers"] = {"Authorization": "Basic {0}".format(token)}
     if payload is not None:
-        request_kwargs['json'] = payload
+        request_kwargs["json"] = payload
     if params is not None:
-        request_kwargs['params'] = params
+        request_kwargs["params"] = params
     return request_kwargs
 
 
@@ -27,21 +27,25 @@ def _handle_response(response: httpx.Response) -> OneSignalResponse:
     return OneSignalResponse(response)
 
 
-def basic_auth_request(method: str,
-                       url: str,
-                       token: str = None,
-                       payload: Dict[str, Any] = None,
-                       params: Dict[str, Any] = None) -> OneSignalResponse:
+def basic_auth_request(
+    method: str,
+    url: str,
+    token: str = None,
+    payload: Dict[str, Any] = None,
+    params: Dict[str, Any] = None,
+) -> OneSignalResponse:
     """Make a request using basic authorization."""
     request_kwargs = _build_request_kwargs(token, payload, params)
     return _handle_response(httpx.request(method, url, **request_kwargs))
 
 
-async def async_basic_auth_request(method: str,
-                                   url: str,
-                                   token: str = None,
-                                   payload: Dict[str, Any] = None,
-                                   params: Dict[str, Any] = None) -> OneSignalResponse:
+async def async_basic_auth_request(
+    method: str,
+    url: str,
+    token: str = None,
+    payload: Dict[str, Any] = None,
+    params: Dict[str, Any] = None,
+) -> OneSignalResponse:
     """Make an async request using basic authorization."""
     request_kwargs = _build_request_kwargs(token, payload, params)
     async with httpx.AsyncClient() as client:
