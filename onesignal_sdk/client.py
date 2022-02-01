@@ -28,6 +28,7 @@ class BaseClient:
         rest_api_key: str,
         user_auth_key: str = None,
         options: Dict[str, str] = None,
+        silence_error=True,
     ):
         self.app_id = app_id
         self.rest_api_key = rest_api_key
@@ -37,6 +38,7 @@ class BaseClient:
         }
         options = options or {}
         self._options = {**default_options, **options}
+        self.silence_error = silence_error
 
     def _get_path(self, path: str, **kwargs) -> str:
         """Get full endpoint for a specific path, formatted with given kwargs."""
@@ -248,7 +250,10 @@ class Client(BaseClient):
         :param notification_body: Notification body
         :return: Http response of One Signal server.
         """
-        return basic_auth_request(**self._kwargs_send_notification(notification_body))
+        return basic_auth_request(
+            **self._kwargs_send_notification(notification_body),
+            silence_error=self.silence_error
+        )
 
     def cancel_notification(self, notification_id: str) -> OneSignalResponse:
         """
@@ -258,7 +263,10 @@ class Client(BaseClient):
         :param notification_id: Notification id.
         :return: Http response of One Signal server.
         """
-        return basic_auth_request(**self._kwargs_cancel_notification(notification_id))
+        return basic_auth_request(
+            **self._kwargs_cancel_notification(notification_id),
+            silence_error=self.silence_error
+        )
 
     def view_notification(self, notification_id: str) -> OneSignalResponse:
         """
@@ -268,7 +276,10 @@ class Client(BaseClient):
         :param notification_id: Notification id.
         :return: Http response of One Signal server.
         """
-        return basic_auth_request(**self._kwargs_view_notification(notification_id))
+        return basic_auth_request(
+            **self._kwargs_view_notification(notification_id),
+            silence_error=self.silence_error
+        )
 
     def view_notifications(self, query: Dict[str, Any] = None) -> OneSignalResponse:
         """
@@ -278,7 +289,9 @@ class Client(BaseClient):
         :param query: Query to apply to the request.
         :return: Http response of One Signal server.
         """
-        return basic_auth_request(**self._kwargs_view_notifications(query))
+        return basic_auth_request(
+            **self._kwargs_view_notifications(query), silence_error=self.silence_error
+        )
 
     def notification_history(
         self, notification_id: str, body: Dict[str, Any]
@@ -292,7 +305,8 @@ class Client(BaseClient):
         :return: Http response of One Signal server.
         """
         return basic_auth_request(
-            **self._kwargs_notification_history(notification_id, body)
+            **self._kwargs_notification_history(notification_id, body),
+            silence_error=self.silence_error
         )
 
     def view_devices(self, query: Dict[str, Any] = None) -> OneSignalResponse:
@@ -313,7 +327,9 @@ class Client(BaseClient):
         :param device_id: identifier Player's One Signal ID or email_auth_hash.
         :return: Http response of One Signal server.
         """
-        return basic_auth_request(**self._kwargs_view_device(device_id))
+        return basic_auth_request(
+            **self._kwargs_view_device(device_id), silence_error=self.silence_error
+        )
 
     def add_device(self, device_body: Dict[str, Any]) -> OneSignalResponse:
         """
@@ -323,7 +339,9 @@ class Client(BaseClient):
         :param device_body: Device create request body.
         :return: Http response of One Signal server.
         """
-        return basic_auth_request(**self._kwargs_add_device(device_body))
+        return basic_auth_request(
+            **self._kwargs_add_device(device_body), silence_error=self.silence_error
+        )
 
     def edit_device(
         self, device_id: str, device_body: Dict[str, Any]
@@ -336,7 +354,10 @@ class Client(BaseClient):
         :param device_body: Device edit request body.
         :return: Http response of One Signal server.
         """
-        return basic_auth_request(**self._kwargs_edit_device(device_id, device_body))
+        return basic_auth_request(
+            **self._kwargs_edit_device(device_id, device_body),
+            silence_error=self.silence_error
+        )
 
     def edit_tags(
         self, external_user_id: str, body: Dict[str, Any]
@@ -349,7 +370,10 @@ class Client(BaseClient):
         :param body: {tags: {tag1: "new", tag2: ""}}
         :return: Http response of One Signal server.
         """
-        return basic_auth_request(**self._kwargs_edit_tags(external_user_id, body))
+        return basic_auth_request(
+            **self._kwargs_edit_tags(external_user_id, body),
+            silence_error=self.silence_error
+        )
 
     def new_session(self, device_id: str, body: Dict[str, Any]) -> OneSignalResponse:
         """
@@ -360,7 +384,10 @@ class Client(BaseClient):
         :param body: Update body.
         :return: Http response of One Signal server.
         """
-        return basic_auth_request(**self._kwargs_new_session(device_id, body))
+        return basic_auth_request(
+            **self._kwargs_new_session(device_id, body),
+            silence_error=self.silence_error
+        )
 
     def new_purchase(self, device_id: str, body: Dict[str, Any]) -> OneSignalResponse:
         """
@@ -371,7 +398,10 @@ class Client(BaseClient):
         :param body: Update body.
         :return: Http response of One Signal server.
         """
-        return basic_auth_request(**self._kwargs_new_purchase(device_id, body))
+        return basic_auth_request(
+            **self._kwargs_new_purchase(device_id, body),
+            silence_error=self.silence_error
+        )
 
     def csv_export(self, body: Dict[str, Any]) -> OneSignalResponse:
         """
@@ -381,7 +411,9 @@ class Client(BaseClient):
         :param body: Post body.
         :return: Http response of One Signal server.
         """
-        return basic_auth_request(**self._kwargs_csv_export(body))
+        return basic_auth_request(
+            **self._kwargs_csv_export(body), silence_error=self.silence_error
+        )
 
     def create_segment(self, body: Dict[str, Any]) -> OneSignalResponse:
         """
@@ -391,7 +423,9 @@ class Client(BaseClient):
         :param body: Post body.
         :return: Http response of One Signal server.
         """
-        return basic_auth_request(**self._kwargs_create_segments(body))
+        return basic_auth_request(
+            **self._kwargs_create_segments(body), silence_error=self.silence_error
+        )
 
     def delete_segment(self, segment_id: str) -> OneSignalResponse:
         """
@@ -401,7 +435,9 @@ class Client(BaseClient):
         :param segment_id: Id of segment to be deleted.
         :return: Http response of One Signal server.
         """
-        return basic_auth_request(**self._kwargs_delete_segments(segment_id))
+        return basic_auth_request(
+            **self._kwargs_delete_segments(segment_id), silence_error=self.silence_error
+        )
 
     def view_outcomes(
         self, outcome_names: List[str], extra_params: Dict[str, Any] = None
@@ -415,7 +451,8 @@ class Client(BaseClient):
         :return: Http response of One Signal server.
         """
         return basic_auth_request(
-            **self._kwargs_view_outcomes(outcome_names, extra_params)
+            **self._kwargs_view_outcomes(outcome_names, extra_params),
+            silence_error=self.silence_error
         )
 
     def view_apps(self) -> OneSignalResponse:
@@ -426,7 +463,9 @@ class Client(BaseClient):
 
         :return: Http response of One Signal server.
         """
-        return basic_auth_request(**self._kwargs_view_apps())
+        return basic_auth_request(
+            **self._kwargs_view_apps(), silence_error=self.silence_error
+        )
 
     def view_app(self, app_id: str) -> OneSignalResponse:
         """
@@ -437,7 +476,9 @@ class Client(BaseClient):
         :param app_id: Application id.
         :return: Http response of One Signal server.
         """
-        return basic_auth_request(**self._kwargs_view_app(app_id))
+        return basic_auth_request(
+            **self._kwargs_view_app(app_id), silence_error=self.silence_error
+        )
 
     def create_app(self, app_body: Dict[str, Any]) -> OneSignalResponse:
         """
@@ -447,7 +488,9 @@ class Client(BaseClient):
         :param app_body: App create body.
         :return: Http response of One Signal server.
         """
-        return basic_auth_request(**self._kwargs_create_app(app_body))
+        return basic_auth_request(
+            **self._kwargs_create_app(app_body), silence_error=self.silence_error
+        )
 
     def update_app(self, app_id: str, app_body: Dict[str, Any]) -> OneSignalResponse:
         """
@@ -458,4 +501,7 @@ class Client(BaseClient):
         :param app_body: App update body.
         :return: Http response of One Signal server.
         """
-        return basic_auth_request(**self._kwargs_update_app(app_id, app_body))
+        return basic_auth_request(
+            **self._kwargs_update_app(app_id, app_body),
+            silence_error=self.silence_error
+        )
